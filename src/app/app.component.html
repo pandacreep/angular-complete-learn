@@ -2,7 +2,7 @@
 <main>
   <ul id="users">
     <li>
-      <app-user 
+      <app-user
         [id]="users[0].id"
         [avatar]="users[0].avatar"
         [name]="users[0].name"
@@ -34,4 +34,5 @@
       />
     </li>
   </ul>
+  <app-tasks [name]="selectedUser.name"></app-tasks>
 </main>
