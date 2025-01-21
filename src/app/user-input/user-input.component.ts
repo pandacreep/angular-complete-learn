@@ -9,5 +9,7 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './user-input.component.css'
 })
 export class UserInputComponent {
-
+  onSubmit() {
+    console.log('SUBMITTED!')
+  }
 }
