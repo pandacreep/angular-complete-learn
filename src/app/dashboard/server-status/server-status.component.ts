@@ -15,6 +15,7 @@ export class ServerStatusComponent implements OnInit {
   }
 
   ngOnInit() {
+    console.log('ON INIT');
     setInterval(() => {
       const rnd = Math.random();
       if (rnd < 0.5) {
@@ -25,5 +26,9 @@ export class ServerStatusComponent implements OnInit {
         this.currentStatus = 'unknown';
       }
     }, 5000);
+  }
+
+  ngAfterViewInit() {
+    console.log('AFTER VIEW INIT');
   }
 }
