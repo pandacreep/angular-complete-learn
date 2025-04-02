@@ -12,7 +12,10 @@ import { ControlComponent } from "../../../shared/control/control.component";
   styleUrl: './new-ticket.component.css'
 })
 export class NewTicketComponent {
-  onSubmit() {
+  onSubmit(titleElement: HTMLInputElement) {
     console.log('SUBMITTED!');
+    console.dir(titleElement);
+    const enteredTitle = titleElement.value;
+    console.log('ENTERED VALUE: ' + enteredTitle);
   }
 }
