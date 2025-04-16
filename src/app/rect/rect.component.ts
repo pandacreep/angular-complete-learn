@@ -9,7 +9,7 @@ import { Component, Input } from '@angular/core';
 })
 export class RectComponent {
   // Todo: Implement custom two-way binding
-  // @Input({ required: true }) size!: { width: string, height: string }
+  @Input({ required: true }) size!: { width: string, height: string }
 
   onReset() {
     // ...
