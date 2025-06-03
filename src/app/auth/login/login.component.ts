@@ -21,6 +21,20 @@ export class LoginComponent {
 
   constructor() {
     afterNextRender(() => {
+      const savedForm = window.localStorage.getItem('saved-login-form');
+
+      if (savedForm) {
+        const loadedForm = JSON.parse(savedForm);
+        const savedEmail = loadedForm.email;
+        // this.form().setValue({
+        //   email: savedEmail,
+        //   password: '',
+        // });
+        setTimeout(() => {
+          this.form().controls['email'].setValue(savedEmail);
+        }, 1);
+      }
+
       const subscription = this.form()
         .valueChanges?.pipe(debounceTime(500))
         .subscribe({
