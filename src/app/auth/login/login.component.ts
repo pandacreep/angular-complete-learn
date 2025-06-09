@@ -1,6 +1,12 @@
-import { Component } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { of } from 'rxjs';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import {
+  AbstractControl,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { debounceTime, of } from 'rxjs';
 
 function mustContainQuestionMark(control: AbstractControl) {
   if (control.value.includes('?')) {
@@ -14,7 +20,14 @@ function emailIsUnique(control: AbstractControl) {
   if (control.value !== 'test@example.com') {
     return of(null);
   }
-  return of({ notUnique: true })
+  return of({ notUnique: true });
+}
+
+let initialEmailValue = '';
+const savedform = window.localStorage.getItem('saved-login-form');
+if (savedform) {
+  const loadedForm = JSON.parse(savedform);
+  initialEmailValue = loadedForm.email;
 }
 
 @Component({
@@ -24,9 +37,10 @@ function emailIsUnique(control: AbstractControl) {
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
+  private destroyRef = inject(DestroyRef);
   form = new FormGroup({
-    email: new FormControl('', {
+    email: new FormControl(initialEmailValue, {
       validators: [Validators.email, Validators.required],
       asyncValidators: [emailIsUnique],
     }),
@@ -53,6 +67,29 @@ export class LoginComponent {
       this.form.controls.password.dirty &&
       this.form.controls.password.invalid
     );
+  }
+
+  ngOnInit(): void {
+    // option 1
+    // const savedform = window.localStorage.getItem('saved-login-form');
+    // if (savedform) {
+    //   const loadedForm = JSON.parse(savedform);
+    //   this.form.patchValue({
+    //     email: loadedForm.email,
+    //   });
+    // }
+
+
+
+    const subscription = this.form.valueChanges.pipe(debounceTime(500)).subscribe({
+      next: (value) => {
+        window.localStorage.setItem(
+          'saved-login-form',
+          JSON.stringify({ email: value.email })
+        );
+      },
+    });
+    this.destroyRef.onDestroy(() => subscription.unsubscribe());
   }
 
   onSubmit() {
