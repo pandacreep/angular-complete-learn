@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject } from '@angular/core';
 import {
   AbstractControl,
   FormControl,
@@ -13,20 +13,22 @@ function mustContainQuestionMark(control: AbstractControl) {
     return null;
   }
 
-  return { doesNotContainQuestrionMark: true };
+  return { doesNotContainQuestionMark: true };
 }
 
 function emailIsUnique(control: AbstractControl) {
   if (control.value !== 'test@example.com') {
     return of(null);
   }
+
   return of({ notUnique: true });
 }
 
 let initialEmailValue = '';
-const savedform = window.localStorage.getItem('saved-login-form');
-if (savedform) {
-  const loadedForm = JSON.parse(savedform);
+const savedForm = window.localStorage.getItem('saved-login-form');
+
+if (savedForm) {
+  const loadedForm = JSON.parse(savedForm);
   initialEmailValue = loadedForm.email;
 }
 
@@ -69,26 +71,27 @@ export class LoginComponent implements OnInit {
     );
   }
 
-  ngOnInit(): void {
-    // option 1
-    // const savedform = window.localStorage.getItem('saved-login-form');
-    // if (savedform) {
-    //   const loadedForm = JSON.parse(savedform);
+  ngOnInit() {
+    // const savedForm = window.localStorage.getItem('saved-login-form');
+
+    // if (savedForm) {
+    //   const loadedForm = JSON.parse(savedForm);
     //   this.form.patchValue({
     //     email: loadedForm.email,
     //   });
     // }
 
+    const subscription = this.form.valueChanges
+      .pipe(debounceTime(500))
+      .subscribe({
+        next: (value) => {
+          window.localStorage.setItem(
+            'saved-login-form',
+            JSON.stringify({ email: value.email })
+          );
+        },
+      });
 
-
-    const subscription = this.form.valueChanges.pipe(debounceTime(500)).subscribe({
-      next: (value) => {
-        window.localStorage.setItem(
-          'saved-login-form',
-          JSON.stringify({ email: value.email })
-        );
-      },
-    });
     this.destroyRef.onDestroy(() => subscription.unsubscribe());
   }
 
