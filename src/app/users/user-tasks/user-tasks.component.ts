@@ -24,36 +24,19 @@ import {
   templateUrl: './user-tasks.component.html',
   styleUrl: './user-tasks.component.css',
 })
-export class UserTasksComponent {
+export class UserTasksComponent implements OnInit {
   // userId = input.required<string>();
   userName = input.required<string>();
   message = input.required<string>();
-  // private userService = inject(UsersService);
+  private activatedRoute = inject(ActivatedRoute);
 
-  // alternative way
-  // private activatedRoute = inject(ActivatedRoute);
-  // private destroyRef = inject(DestroyRef);
-
-  // userName = computed(
-  //   () => this.userService.users.find(u => u.id === this.userId())?.name
-  // )
-
-  // ngOnInit(): void {
-  //   console.log('Input data: ' + this.message());
-
-  //   console.log(this.activatedRoute.paramMap);
-  //   console.log(this.activatedRoute.snapshot.paramMap);
-
-  //   const subscription = this.activatedRoute.paramMap.subscribe({
-  //     next: (paramMap) => {
-  //       this.userName =
-  //         this.userService.users.find((u) => u.id === paramMap.get('userId'))
-  //           ?.name || '';
-  //     },
-  //   });
-
-  //   this.destroyRef.onDestroy(() => subscription.unsubscribe());
-  // }
+  ngOnInit(): void {
+    this.activatedRoute.data.subscribe({
+      next: data => {
+        console.log(data); 
+      }
+    });
+  }
 }
 
 export const resolveUserName: ResolveFn<string> = (
