@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { increase } from '../store/conter.actions';
+// import { IncrementAction } from '../store/conter.actions';
 
 
 @Component({
