@@ -1,6 +1,6 @@
 import { Action, createAction, props } from '@ngrx/store';
 
-export const increase = createAction(
+export const increment = createAction(
   '[Counter] Increment',
   props<{ value: number }>()
 );
