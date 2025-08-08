@@ -12,7 +12,8 @@ import {
   SimpleChanges, 
   ViewChild, 
   ViewEncapsulation,
-  ElementRef } from '@angular/core';
+  ElementRef, 
+  ContentChild} from '@angular/core';
 
 @Component({
   selector: 'app-server-element',
@@ -39,7 +40,7 @@ export class ServerElementComponent
   };
   @Input() name: string;
   @ViewChild('heading') header: ElementRef;
-
+  @ContentChild('p') paragraph: ElementRef;
 
   constructor() {
     console.log('constructor called!');
@@ -52,7 +53,10 @@ export class ServerElementComponent
 
   ngOnInit(): void {
     console.log('ngOnInit called!');
-    console.log('Text content: ' + this.header.nativeElement.textContent);
+    // console.log('Text content: ' + this.header.nativeElement.textContent);
+    console.log(
+      'Text content of paragraph: ' + this.paragraph.nativeElement.textContent
+    );
   }
 
   ngDoCheck(): void {
@@ -61,15 +65,28 @@ export class ServerElementComponent
 
   ngAfterContentInit(): void {
     console.log('ngAfterContentInit called!');
+    // console.log(
+    //   'Text content of paragraph: ' + this.paragraph.nativeElement.textContent
+    // );
   }
 
   ngAfterContentChecked(): void {
     console.log('ngAfterContentChecked');
+    // dont work
+    //console.log('Text content of paragraph: ' + this.paragraph);
+    
+    // console.log(
+    //   'Text content of paragraph: ' + this.paragraph.nativeElement.textContent
+    // );
   }
 
   ngAfterViewInit(): void {
     console.log('ngAfterViewInit called!');
     console.log('Text content: ' + this.header.nativeElement.textContent);
+    // dont work
+    // console.log(
+    //   'Text content of paragraph: ' + this.paragraph.nativeElement.textContent
+    // );
   }
 
   ngAfterViewChecked(): void {
