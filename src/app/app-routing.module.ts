@@ -10,6 +10,7 @@ import { UserComponent } from './users/user/user.component';
 import { UsersComponent } from './users/users.component';
 import { AuthGuard } from './auth-guard.service';
 import { CanDeactivateGiard } from './servers/edit-server/can-deactivate.guard.service';
+import { ErrorPageComponent } from './error-page/error-page.component';
 
 const appRoutes: Routes = [
   {
@@ -28,8 +29,8 @@ const appRoutes: Routes = [
   },
   {
     path: 'servers',
-	// canActivate: [AuthGuard],
-	canActivateChild: [AuthGuard],
+    // canActivate: [AuthGuard],
+    canActivateChild: [AuthGuard],
     component: ServersComponent,
     children: [
       {
@@ -39,11 +40,12 @@ const appRoutes: Routes = [
       {
         path: ':id/edit',
         component: EditServerComponent,
-        canDeactivate: [CanDeactivateGiard]
+        canDeactivate: [CanDeactivateGiard],
       },
     ],
   },
-  { path: 'not-found', component: PageNotFoundComponent },
+  // { path: 'not-found', component: PageNotFoundComponent },
+  { path: 'not-found', component: ErrorPageComponent, data: {message: 'Page not found!'} },
   { path: '**', redirectTo: '/not-found' },
 ];
 
