@@ -4,7 +4,6 @@ import { map } from 'rxjs/operators';
 
 import { Post } from './post.model';
 
-
 @Injectable({ providedIn: 'root' })
 export class PostsService {
   constructor(private readonly http: HttpClient) {}
@@ -25,20 +24,27 @@ export class PostsService {
   }
 
   fetchPosts() {
-	return this.http
-    .get<{ [key: string]: Post }>(
-      'https://ng-complete-guide-b73c4-default-rtdb.europe-west1.firebasedatabase.app/posts.json'
-    )
-    .pipe(
-      map((responseData) => {
-        const postArray: Post[] = [];
-        for (const key in responseData) {
-          if (responseData.hasOwnProperty(key)) {
-            postArray.push({ ...responseData[key], id: key });
+    return this.http
+      .get<{ [key: string]: Post }>(
+        'https://ng-complete-guide-b73c4-default-rtdb.europe-west1.firebasedatabase.app/posts.json'
+      )
+      .pipe(
+        map((responseData) => {
+          const postArray: Post[] = [];
+          for (const key in responseData) {
+            if (responseData.hasOwnProperty(key)) {
+              postArray.push({ ...responseData[key], id: key });
+            }
           }
-        }
-        return postArray;
-      })
-    );
+          return postArray;
+        })
+      );
+  }
+
+  deletePosts() {
+    return this.http
+      .delete(
+        'https://ng-complete-guide-b73c4-default-rtdb.europe-west1.firebasedatabase.app/posts.json'
+      );
   }
 }
