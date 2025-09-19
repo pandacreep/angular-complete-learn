@@ -1,7 +1,12 @@
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpEventType,
+  HttpHeaders,
+  HttpParams,
+} from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Subject, throwError } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
+import { map, catchError, tap } from 'rxjs/operators';
 
 import { Post } from './post.model';
 
@@ -19,27 +24,33 @@ export class PostsService {
     this.http
       .post<{ name: string }>(
         'https://ng-complete-guide-b73c4-default-rtdb.europe-west1.firebasedatabase.app/posts.json',
-        postData
+        postData,
+        {
+          observe: 'response',
+        }
       )
-      .subscribe((responseData) => {
-        console.log(responseData);
-      }, error => {
-		this.error.next(error.message);
-	  });
+      .subscribe(
+        (responseData) => {
+          console.log(responseData);
+        },
+        (error) => {
+          this.error.next(error.message);
+        }
+      );
   }
 
   fetchPosts() {
-	let searchParams = new HttpParams();
-	searchParams = searchParams.append('print', 'pretty');
+    let searchParams = new HttpParams();
+    searchParams = searchParams.append('print', 'pretty');
     searchParams = searchParams.append('custom', 'key');
-	return this.http
+    return this.http
       .get<{ [key: string]: Post }>(
         'https://ng-complete-guide-b73c4-default-rtdb.europe-west1.firebasedatabase.app/posts.json',
-		{
-		  headers: new HttpHeaders({ 'Custom-Header': 'Hello' }),
-		//   params: new HttpParams().set('print', 'pretty')
-		params: searchParams
-		}
+        {
+          headers: new HttpHeaders({ 'Custom-Header': 'Hello' }),
+          //   params: new HttpParams().set('print', 'pretty')
+          params: searchParams,
+        }
       )
       .pipe(
         map((responseData) => {
@@ -51,17 +62,31 @@ export class PostsService {
           }
           return postArray;
         }),
-		catchError(errorRes => {
-		  // Send data to analytics server
-		  return throwError(errorRes);
-		})
+        catchError((errorRes) => {
+          // Send data to analytics server
+          return throwError(errorRes);
+        })
       );
   }
 
   deletePosts() {
     return this.http
       .delete(
-        'https://ng-complete-guide-b73c4-default-rtdb.europe-west1.firebasedatabase.app/posts.json'
+        'https://ng-complete-guide-b73c4-default-rtdb.europe-west1.firebasedatabase.app/posts.json',
+        {
+          observe: 'events',
+        }
+      )
+      .pipe(
+        tap((event) => {
+          console.log('event', event);
+          if (event.type === HttpEventType.Sent) {
+            //
+          }
+          if (event.type === HttpEventType.Response) {
+            console.log(event.body);
+          }
+        })
       );
   }
 }
